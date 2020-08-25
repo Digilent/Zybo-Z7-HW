@@ -25,7 +25,7 @@ Demos were moved into this repository during 2020.1 updates. History of these de
 * https://github.com/Digilent/Zybo-Z7-10-HDMI
 * https://github.com/Digilent/Zybo-Z7-20-HDMI
 * https://github.com/Digilent/Zybo-Z7-20-pcam-5c
-* https://github.com/Digilent/ZyboZ7-20-Pmod-ToF-Demo
+* https://github.com/Digilent/ZyboZ7-20-PmodToF-Demo
 * https://github.com/Digilent/Zybo-Z7-10-Pmod-VGA
 * https://github.com/Digilent/Zybo-Z7-20-Pmod-VGA
 * https://github.com/Digilent/Zybo-Z7-10-XADC
