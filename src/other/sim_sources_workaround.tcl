@@ -1,1 +1,0 @@
-set_property  library xil_defaultlib [get_files -compile_order sources -used_in simulation]
