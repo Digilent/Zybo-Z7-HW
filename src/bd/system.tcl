@@ -125,7 +125,7 @@ set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:xlslice:1.0\
-digilentinc.com:ip:axi_dynclk:1.1\
+digilentinc.com:ip:axi_dynclk:1.2\
 xilinx.com:ip:axi_gpio:2.0\
 digilentinc.com:user:axi_i2s_adi:1.2\
 xilinx.com:ip:axi_iic:2.0\
@@ -289,7 +289,7 @@ proc create_root_design { parentCell } {
  ] $PS_GPIO_3
 
   # Create instance: axi_dynclk_0, and set properties
-  set axi_dynclk_0 [ create_bd_cell -type ip -vlnv digilentinc.com:ip:axi_dynclk:1.1 axi_dynclk_0 ]
+  set axi_dynclk_0 [ create_bd_cell -type ip -vlnv digilentinc.com:ip:axi_dynclk:1.2 axi_dynclk_0 ]
 
   # Create instance: axi_gpio_eth, and set properties
   set axi_gpio_eth [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 axi_gpio_eth ]
