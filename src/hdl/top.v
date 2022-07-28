@@ -63,7 +63,10 @@ module top(
         .vauxp14        (ja[0]),
         
         .vauxn15        (ja[6]),
-        .vauxp15        (ja[2])
+        .vauxp15        (ja[2]),
+        
+        .vp_in          (0),
+        .vn_in          (0)
     );
     
     always@(posedge clk)
