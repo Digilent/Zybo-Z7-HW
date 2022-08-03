@@ -20,14 +20,13 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2020.1
+set scripts_vivado_version 2021.1
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
    puts ""
-   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
+   common::send_gid_msg -ssname BD::TCL -id 2040 -severity "WARNING" "This script was generated using Vivado <$scripts_vivado_version> without IP versions in the create_bd_cell commands, but is now being run in <$current_vivado_version> of Vivado. There may have been major IP version changes between Vivado <$scripts_vivado_version> and <$current_vivado_version>, which could impact the parameter settings of the IPs."
 
-   return 1
 }
 
 ################################################################
@@ -51,7 +50,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
    create_project project_1 myproj -part xc7z010clg400-1
-   set_property BOARD_PART digilentinc.com:zybo-z7-10:part0:1.0 [current_project]
+   set_property BOARD_PART digilentinc.com:zybo-z7-10:part0:1.1 [current_project]
 }
 
 
@@ -131,18 +130,18 @@ set bCheckIPsPassed 1
 set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
-digilentinc.com:user:AXI_BayerToRGB:1.0\
-digilentinc.com:user:AXI_GammaCorrection:1.0\
-digilentinc.com:ip:MIPI_CSI_2_RX:1.2\
-digilentinc.com:ip:MIPI_D_PHY_RX:1.3\
-xilinx.com:ip:axi_vdma:6.3\
-xilinx.com:ip:clk_wiz:6.0\
-xilinx.com:ip:processing_system7:5.5\
-digilentinc.com:ip:rgb2dvi:1.4\
-xilinx.com:ip:proc_sys_reset:5.0\
-xilinx.com:ip:v_axi4s_vid_out:4.0\
-xilinx.com:ip:v_tc:6.2\
-xilinx.com:ip:xlconcat:2.1\
+digilentinc.com:user:AXI_BayerToRGB:*\
+digilentinc.com:user:AXI_GammaCorrection:*\
+digilentinc.com:ip:MIPI_CSI_2_RX:*\
+digilentinc.com:ip:MIPI_D_PHY_RX:*\
+xilinx.com:ip:axi_vdma:*\
+xilinx.com:ip:clk_wiz:*\
+xilinx.com:ip:processing_system7:*\
+digilentinc.com:ip:rgb2dvi:*\
+xilinx.com:ip:proc_sys_reset:*\
+xilinx.com:ip:v_axi4s_vid_out:*\
+xilinx.com:ip:v_tc:*\
+xilinx.com:ip:xlconcat:*\
 "
 
    set list_ips_missing ""
@@ -256,10 +255,10 @@ proc create_root_design { parentCell } {
   set dphy_data_lp_p [ create_bd_port -dir I -from 1 -to 0 dphy_data_lp_p ]
 
   # Create instance: AXI_BayerToRGB_0, and set properties
-  set AXI_BayerToRGB_0 [ create_bd_cell -type ip -vlnv digilentinc.com:user:AXI_BayerToRGB:1.0 AXI_BayerToRGB_0 ]
+  set AXI_BayerToRGB_0 [ create_bd_cell -type ip -vlnv digilentinc.com:user:AXI_BayerToRGB AXI_BayerToRGB_0 ]
 
   # Create instance: AXI_GammaCorrection_1, and set properties
-  set AXI_GammaCorrection_1 [ create_bd_cell -type ip -vlnv digilentinc.com:user:AXI_GammaCorrection:1.0 AXI_GammaCorrection_1 ]
+  set AXI_GammaCorrection_1 [ create_bd_cell -type ip -vlnv digilentinc.com:user:AXI_GammaCorrection AXI_GammaCorrection_1 ]
 
   # Create instance: DVIClocking_1, and set properties
   set block_name DVIClocking
@@ -273,14 +272,14 @@ proc create_root_design { parentCell } {
    }
   
   # Create instance: MIPI_CSI_2_RX_0, and set properties
-  set MIPI_CSI_2_RX_0 [ create_bd_cell -type ip -vlnv digilentinc.com:ip:MIPI_CSI_2_RX:1.2 MIPI_CSI_2_RX_0 ]
+  set MIPI_CSI_2_RX_0 [ create_bd_cell -type ip -vlnv digilentinc.com:ip:MIPI_CSI_2_RX MIPI_CSI_2_RX_0 ]
   set_property -dict [ list \
    CONFIG.kDebug {false} \
    CONFIG.kGenerateAXIL {true} \
  ] $MIPI_CSI_2_RX_0
 
   # Create instance: MIPI_D_PHY_RX_0, and set properties
-  set MIPI_D_PHY_RX_0 [ create_bd_cell -type ip -vlnv digilentinc.com:ip:MIPI_D_PHY_RX:1.3 MIPI_D_PHY_RX_0 ]
+  set MIPI_D_PHY_RX_0 [ create_bd_cell -type ip -vlnv digilentinc.com:ip:MIPI_D_PHY_RX MIPI_D_PHY_RX_0 ]
   set_property -dict [ list \
    CONFIG.kDebug {false} \
    CONFIG.kGenerateAXIL {true} \
@@ -289,21 +288,21 @@ proc create_root_design { parentCell } {
  ] $MIPI_D_PHY_RX_0
 
   # Create instance: axi_mem_intercon, and set properties
-  set axi_mem_intercon [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_mem_intercon ]
+  set axi_mem_intercon [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_mem_intercon ]
   set_property -dict [ list \
    CONFIG.NUM_MI {1} \
    CONFIG.SYNCHRONIZATION_STAGES {2} \
  ] $axi_mem_intercon
 
   # Create instance: axi_mem_intercon_1, and set properties
-  set axi_mem_intercon_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_mem_intercon_1 ]
+  set axi_mem_intercon_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_mem_intercon_1 ]
   set_property -dict [ list \
    CONFIG.NUM_MI {1} \
    CONFIG.SYNCHRONIZATION_STAGES {2} \
  ] $axi_mem_intercon_1
 
   # Create instance: axi_vdma_0, and set properties
-  set axi_vdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_vdma:6.3 axi_vdma_0 ]
+  set axi_vdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_vdma axi_vdma_0 ]
   set_property -dict [ list \
    CONFIG.c_include_mm2s_dre {0} \
    CONFIG.c_include_s2mm {1} \
@@ -315,7 +314,7 @@ proc create_root_design { parentCell } {
  ] $axi_vdma_0
 
   # Create instance: clk_wiz_0, and set properties
-  set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_0 ]
+  set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0 ]
   set_property -dict [ list \
    CONFIG.CLKOUT1_DRIVES {BUFG} \
    CONFIG.CLKOUT1_JITTER {174.353} \
@@ -354,7 +353,7 @@ proc create_root_design { parentCell } {
  ] $clk_wiz_0
 
   # Create instance: processing_system7_0, and set properties
-  set processing_system7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 processing_system7_0 ]
+  set processing_system7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7 processing_system7_0 ]
   set_property -dict [ list \
    CONFIG.PCW_ACT_APU_PERIPHERAL_FREQMHZ {666.666687} \
    CONFIG.PCW_ACT_CAN_PERIPHERAL_FREQMHZ {10.000000} \
@@ -671,8 +670,13 @@ proc create_root_design { parentCell } {
    CONFIG.PCW_MIO_9_IOTYPE {LVCMOS 3.3V} \
    CONFIG.PCW_MIO_9_PULLUP {enabled} \
    CONFIG.PCW_MIO_9_SLEW {slow} \
-   CONFIG.PCW_MIO_TREE_PERIPHERALS {GPIO#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#GPIO#Quad SPI Flash#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#SD 0#SD 0#SD 0#SD 0#SD 0#SD 0#USB Reset#GPIO#UART 1#UART 1#GPIO#GPIO#Enet 0#Enet 0} \
-   CONFIG.PCW_MIO_TREE_SIGNALS {gpio[0]#qspi0_ss_b#qspi0_io[0]#qspi0_io[1]#qspi0_io[2]#qspi0_io[3]/HOLD_B#qspi0_sclk#gpio[7]#qspi_fbclk#gpio[9]#gpio[10]#gpio[11]#gpio[12]#gpio[13]#gpio[14]#gpio[15]#tx_clk#txd[0]#txd[1]#txd[2]#txd[3]#tx_ctl#rx_clk#rxd[0]#rxd[1]#rxd[2]#rxd[3]#rx_ctl#data[4]#dir#stp#nxt#data[0]#data[1]#data[2]#data[3]#clk#data[5]#data[6]#data[7]#clk#cmd#data[0]#data[1]#data[2]#data[3]#reset#gpio[47]#tx#rx#gpio[50]#gpio[51]#mdc#mdio} \
+   CONFIG.PCW_MIO_TREE_PERIPHERALS {GPIO#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI\
+Flash#Quad SPI Flash#GPIO#Quad SPI\
+Flash#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#GPIO#Enet 0#Enet 0#Enet 0#Enet 0#Enet\
+0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#Enet 0#USB 0#USB 0#USB 0#USB 0#USB\
+0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#USB 0#SD 0#SD 0#SD 0#SD 0#SD 0#SD 0#USB\
+Reset#GPIO#UART 1#UART 1#GPIO#GPIO#Enet 0#Enet 0}\
+   CONFIG.PCW_MIO_TREE_SIGNALS {gpio[0]#qspi0_ss_b#qspi0_io[0]#qspi0_io[1]#qspi0_io[2]#qspi0_io[3]/HOLD_B#qspi0_sclk#gpio[7]#qspi_fbclk#gpio[9]#gpio[10]#gpio[11]#gpio[12]#gpio[13]#gpio[14]#gpio[15]#tx_clk#txd[0]#txd[1]#txd[2]#txd[3]#tx_ctl#rx_clk#rxd[0]#rxd[1]#rxd[2]#rxd[3]#rx_ctl#data[4]#dir#stp#nxt#data[0]#data[1]#data[2]#data[3]#clk#data[5]#data[6]#data[7]#clk#cmd#data[0]#data[1]#data[2]#data[3]#reset#gpio[47]#tx#rx#gpio[50]#gpio[51]#mdc#mdio}\
    CONFIG.PCW_NAND_GRP_D8_ENABLE {0} \
    CONFIG.PCW_NAND_PERIPHERAL_ENABLE {0} \
    CONFIG.PCW_NOR_GRP_A25_ENABLE {0} \
@@ -750,14 +754,14 @@ proc create_root_design { parentCell } {
  ] $processing_system7_0
 
   # Create instance: ps7_0_axi_periph, and set properties
-  set ps7_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 ps7_0_axi_periph ]
+  set ps7_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect ps7_0_axi_periph ]
   set_property -dict [ list \
    CONFIG.NUM_MI {6} \
    CONFIG.SYNCHRONIZATION_STAGES {2} \
  ] $ps7_0_axi_periph
 
   # Create instance: rgb2dvi_0, and set properties
-  set rgb2dvi_0 [ create_bd_cell -type ip -vlnv digilentinc.com:ip:rgb2dvi:1.4 rgb2dvi_0 ]
+  set rgb2dvi_0 [ create_bd_cell -type ip -vlnv digilentinc.com:ip:rgb2dvi rgb2dvi_0 ]
   set_property -dict [ list \
    CONFIG.kClkPrimitive {PLL} \
    CONFIG.kClkRange {1} \
@@ -766,20 +770,20 @@ proc create_root_design { parentCell } {
  ] $rgb2dvi_0
 
   # Create instance: rst_clk_wiz_0_50M, and set properties
-  set rst_clk_wiz_0_50M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_clk_wiz_0_50M ]
+  set rst_clk_wiz_0_50M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_clk_wiz_0_50M ]
 
   # Create instance: rst_vid_clk_dyn, and set properties
-  set rst_vid_clk_dyn [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_vid_clk_dyn ]
+  set rst_vid_clk_dyn [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset rst_vid_clk_dyn ]
 
   # Create instance: v_axi4s_vid_out_0, and set properties
-  set v_axi4s_vid_out_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_axi4s_vid_out:4.0 v_axi4s_vid_out_0 ]
+  set v_axi4s_vid_out_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_axi4s_vid_out v_axi4s_vid_out_0 ]
   set_property -dict [ list \
    CONFIG.C_HAS_ASYNC_CLK {1} \
    CONFIG.C_VTG_MASTER_SLAVE {1} \
  ] $v_axi4s_vid_out_0
 
   # Create instance: video_dynclk, and set properties
-  set video_dynclk [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 video_dynclk ]
+  set video_dynclk [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz video_dynclk ]
   set_property -dict [ list \
    CONFIG.CLKOUT1_DRIVES {No_buffer} \
    CONFIG.CLKOUT1_JITTER {232.529} \
@@ -806,7 +810,7 @@ proc create_root_design { parentCell } {
  ] $video_dynclk
 
   # Create instance: vtg, and set properties
-  set vtg [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_tc:6.2 vtg ]
+  set vtg [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_tc vtg ]
   set_property -dict [ list \
    CONFIG.GEN_F0_VBLANK_HEND {640} \
    CONFIG.GEN_F0_VBLANK_HSTART {640} \
@@ -832,7 +836,7 @@ proc create_root_design { parentCell } {
  ] $vtg
 
   # Create instance: xlconcat_0, and set properties
-  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
+  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0 ]
   set_property -dict [ list \
    CONFIG.NUM_PORTS {3} \
  ] $xlconcat_0
