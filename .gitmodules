@@ -1,6 +1,6 @@
 [submodule "repo/vivado-library"]
 	path = repo/vivado-library
-	url = https://github.com/Digilent/vivado-library
+	url = ../vivado-library.git
 [submodule "scripts"]
 	path = scripts
-	url = https://github.com/Digilent/digilent-vivado-scripts
+	url = ../digilent-vivado-scripts.git
